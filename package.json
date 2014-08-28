@@ -1,0 +1,10 @@
+{
+  "name": "maplight-scraper",
+  "description": "A package for scraping MapLight data",
+  "dependencies": {
+    "request": "2.x.x",
+    "csv": "0.x.x",
+    "cheerio": "0.x.x"
+  },
+  "engine": "node >= 0.10.x"
+}
