@@ -39,7 +39,80 @@ function billsFromMaplightData(file, cb) {
     });
 }
 
-billsFromMaplightData("MapLight_112thBills 20140822.csv", downloadBills);
+function downloadBillDescriptions(versionedBills) {
+    var currTimeout = 0;
+    var num = 0;
+    for (var actionId in versionedBills) {
+        if (!versionedBills.hasOwnProperty(actionId)) {
+            continue;
+        }
+
+        var bill = versionedBills[actionId];
+        var outFile = '' + bill['session'] + '-' + bill['prefix'] + '-' + bill['num'] + '-' + actionId + '-description.json'
+
+        if (fs.existsSync(outFile)) {
+            continue;
+        }
+
+        setTimeout(downloadBillDescription, currTimeout, bill['session'], bill['prefix'], bill['num'], actionId, outFile);
+        currTimeout += 1000 * 8;
+        num += 1;
+    }
+
+    console.log('Downloading ', num, 'bill descriptions...')
+}
+
+function downloadBillDescription(session, prefix, num, actionId, outFile) {
+    console.log('Downloading description ' + prefix + ' ' + num + ' ' + actionId);
+
+    var req = 'http://maplight.org/us-congress/bill/' + session + '-' + prefix + '-' + num + '/' + actionId + '/total-contributions/';
+    request(req, function (error, response, html) {
+        if (!error && response.statusCode == 200) {
+            var $ = cheerio.load(html);
+
+            var actionDescription = $('#map-bill-header-vote > strong').text().toUpperCase(),
+                actionResult = $('#map-bill-header-vote .vote-details:first-of-type').text().toUpperCase(),
+                houseVoteOnPassage = 'House Vote:On Passage'.toUpperCase(),
+                senateVoteOnPassage = 'SenateVote:On Passage'.toUpperCase(),
+                didNotPass = 'DID NOT PASS'.toUpperCase(),
+                didPass = 'PASSED'.toUpperCase(),
+                congress,
+                action,
+                passed;
+
+            if (actionDescription.indexOf(houseVoteOnPassage) != -1) {
+                congress = 'house';
+                action = 'passage';
+            } else if (actionDescription.indexOf(senateVoteOnPassage) != -1) {
+                congress = 'senate';
+                action = 'passage';
+            }
+
+            if (actionResult.indexOf(didNotPass) != -1) {
+                passed = false;
+            } else if (actionResult.indexOf(didPass) != -1) {
+                passed = true;
+            }
+
+            var description = {
+                'session': session,
+                'prefix': prefix,
+                'num': num,
+                'actionId': actionId,
+                'congress': congress,
+                'action': action,
+                'passed': passed
+            };
+
+            fs.writeFileSync(outFile, JSON.stringify(description));
+
+            console.log('>> ', outFile);
+        }
+    });
+}
+
+
+billsFromMaplightData('MapLight_112thBills 20140822.csv', downloadBillDescriptions);
 
 
 function downloadBills(versionedBills) {
@@ -67,7 +140,7 @@ function downloadBills(versionedBills) {
 
 
 function downloadBill(session, prefix, num, actionId, outFile) {
-    console.log('Starting bill ' + prefix + ' ' + num + ' ' + actionId);
+    console.log('Downloading bill ' + prefix + ' ' + num + ' ' + actionId);
 
     var req = 'http://maplight.org/us-congress/bill/' + session + '-' + prefix + '-' + num + '/' + actionId + '/download.csv';
     request(req).pipe(fs.createWriteStream(outFile));
