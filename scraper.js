@@ -55,7 +55,7 @@ function downloadBillDescriptions(versionedBills) {
         }
 
         setTimeout(downloadBillDescription, currTimeout, bill['session'], bill['prefix'], bill['num'], actionId, outFile);
-        currTimeout += 1000 * 8;
+        currTimeout += 1000 * 4;
         num += 1;
     }
 
@@ -72,13 +72,18 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
 
             var actionDescription = $('#map-bill-header-vote > strong').text().toUpperCase(),
                 actionResult = $('#map-bill-header-vote .vote-details:first-of-type').text().toUpperCase(),
+                introductionDate = $('#map-bill-history .odd:first-of-type').first().text().replace('Introduced', ''),
                 houseVoteOnPassage = 'House Vote:On Passage'.toUpperCase(),
                 senateVoteOnPassage = 'SenateVote:On Passage'.toUpperCase(),
                 didNotPass = 'DID NOT PASS'.toUpperCase(),
                 didPass = 'PASSED'.toUpperCase(),
                 congress,
                 action,
-                passed;
+                passed,
+                dateIntroduced,
+                datePassed;
+
+                console.log('ACTION_RESULT: ', actionResult);
 
             if (actionDescription.indexOf(houseVoteOnPassage) != -1) {
                 congress = 'house';
@@ -92,7 +97,10 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 passed = false;
             } else if (actionResult.indexOf(didPass) != -1) {
                 passed = true;
+                datePassed = Date.parse(actionResult);
             }
+
+            dateIntroduced = Date.parse(introductionDate);
 
             var description = {
                 'session': session,
@@ -101,7 +109,9 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 'actionId': actionId,
                 'congress': congress,
                 'action': action,
-                'passed': passed
+                'passed': passed,
+                'dateIntroduced': dateIntroduced,
+                'datePassed': datePassed
             };
 
             fs.writeFileSync(outFile, JSON.stringify(description));
