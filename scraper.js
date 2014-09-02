@@ -83,8 +83,6 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 dateIntroduced,
                 datePassed;
 
-                console.log('ACTION_RESULT: ', actionResult);
-
             if (actionDescription.indexOf(houseVoteOnPassage) != -1) {
                 congress = 'house';
                 action = 'passage';
