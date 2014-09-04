@@ -81,7 +81,7 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 action,
                 passed,
                 dateIntroduced,
-                datePassed;
+                dateVote;
 
             if (actionDescription.indexOf(houseVoteOnPassage) != -1) {
                 congress = 'house';
@@ -89,13 +89,16 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
             } else if (actionDescription.indexOf(senateVoteOnPassage) != -1) {
                 congress = 'senate';
                 action = 'passage';
+            } else {
+                action = 'amendment';
             }
 
             if (actionResult.indexOf(didNotPass) != -1) {
                 passed = false;
+                dateVote = Date.parse(actionResult);
             } else if (actionResult.indexOf(didPass) != -1) {
                 passed = true;
-                datePassed = Date.parse(actionResult);
+                dateVote = Date.parse(actionResult);
             }
 
             dateIntroduced = Date.parse(introductionDate);
@@ -109,7 +112,7 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 'action': action,
                 'passed': passed,
                 'dateIntroduced': dateIntroduced,
-                'datePassed': datePassed
+                'dateVote': dateVote
             };
 
             fs.writeFileSync(outFile, JSON.stringify(description));
