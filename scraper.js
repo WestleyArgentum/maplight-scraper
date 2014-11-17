@@ -34,7 +34,7 @@ function billsFromMaplightData(file, cb) {
             }
         }
 
-        console.log()
+        console.log('Versioned Bills:', versionedBills);
         cb(versionedBills);
     });
 }
