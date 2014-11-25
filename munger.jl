@@ -39,7 +39,7 @@ function build_position_map(bulk_table)
     for r in eachrow(bulk_table)
         positions_on_action = get!(positions, r[:ActionID], {
             "support" => String[],
-            "oppose" => String[],
+            "opposed" => String[],
             "split" => String[] })
 
         likeminded_groups = positions_on_action[lowercase(r[:InterestGroupSupport])]
