@@ -22,6 +22,7 @@ function join_bill_data(positions, description_folder)
 
     for (aid, data) in positions
         println(aid)
+        !haskey(bills, string(aid)) && error("Position data found for a bill without a description. Probably the scraper needs to be run again, it will detect missing descriptions")
 
         bills[string(aid)]["positions"] = data
     end
