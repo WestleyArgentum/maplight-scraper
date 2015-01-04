@@ -76,6 +76,8 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 senateVoteOnPassage = 'SenateVote:On Passage'.toUpperCase(),
                 didNotPass = 'DID NOT PASS'.toUpperCase(),
                 didPass = 'PASSED'.toUpperCase(),
+                totalMoneyFor = $('#total-contributions-graph .graph .map-yes-block .total').text().replace(/\$|,/g, ''),
+                totalMoneyAgainst = $('#total-contributions-graph .graph .map-no-block .total').text().replace(/\$|,/g, ''),
                 congress,
                 action,
                 passed,
@@ -111,7 +113,11 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 'action': action,
                 'passed': passed,
                 'dateIntroduced': dateIntroduced,
-                'dateVote': dateVote
+                'dateVote': dateVote,
+                'money': {
+                    'totalFor': totalMoneyFor,
+                    'totalAgainst': totalMoneyAgainst
+                }
             };
 
             fs.writeFileSync(outFile, JSON.stringify(description));
