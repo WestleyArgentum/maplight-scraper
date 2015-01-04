@@ -137,7 +137,7 @@ function downloadBillsContributions(versionedBills) {
         }
 
         setTimeout(downloadBillContributions, currTimeout, bill['session'], bill['prefix'], bill['num'], actionId, outFile);
-        currTimeout += 1000 * 10;
+        currTimeout += 1000 * 8;
         num += 1;
     }
 
