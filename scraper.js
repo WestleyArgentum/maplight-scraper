@@ -73,7 +73,7 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 actionResult = $('#map-bill-header-vote .vote-details:first-of-type').text().toUpperCase(),
                 introductionDate = $('#map-bill-history .odd:first-of-type').first().text().replace('Introduced', ''),
                 houseVoteOnPassage = 'House Vote:On Passage'.toUpperCase(),
-                senateVoteOnPassage = 'SenateVote:On Passage'.toUpperCase(),
+                senateVoteOnPassage = 'Senate Vote:On Passage'.toUpperCase(),
                 didNotPass = 'DID NOT PASS'.toUpperCase(),
                 didPass = 'PASSED'.toUpperCase(),
                 totalMoneyFor = $('#total-contributions-graph .graph .map-yes-block .total').text().replace(/\$|,/g, ''),
