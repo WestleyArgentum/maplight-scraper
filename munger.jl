@@ -48,6 +48,12 @@ function build_position_map(bulk_table)
         push!(likeminded_groups, r[:Catcode])
     end
 
+    for (aid, data) in positions
+        data["support"] = unique(data["support"])
+        data["oppose"] = unique(data["oppose"])
+        data["split"] = unique(data["split"])
+    end
+
     positions
 end
 
