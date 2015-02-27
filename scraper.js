@@ -78,6 +78,10 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
                 didPass = 'PASSED'.toUpperCase(),
                 totalMoneyFor = $('#total-contributions-graph .graph .map-yes-block .total').text().replace(/\$|,/g, ''),
                 totalMoneyAgainst = $('#total-contributions-graph .graph .map-no-block .total').text().replace(/\$|,/g, ''),
+                title = $.trim($('#topic').text()),
+                summary = $('#summary').text(),
+                sponsor = $('#sponsor a').text(),
+                sponsorLink = $('#sponsor a').attr('href'),
                 congress,
                 action,
                 passed,
@@ -105,6 +109,12 @@ function downloadBillDescription(session, prefix, num, actionId, outFile) {
             dateIntroduced = Date.parse(introductionDate);
 
             var description = {
+                'title': title,
+                'summary': summary,
+                'sponsor': {
+                    'name': sponsor,
+                    'link': sponsorLink
+                },
                 'session': session,
                 'prefix': prefix,
                 'num': num,
